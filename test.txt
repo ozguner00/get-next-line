@@ -1,3 +1,5 @@
 123456789
 deneme
 hello_world
+4.satır
+5.satır

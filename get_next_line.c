@@ -18,7 +18,7 @@ char *ft_read_line(int fd)
 				return NULL;
 			}
 			total_read_byte += read_byte;
-			line = ft_linecat(line,buffer,total_read_byte);
+			line = ft_linecat(line,buffer,total_read_byte,read_byte);
 			if(ft_strchr(line,'\n'))
 				return line;
 			read_byte = read(fd,buffer,BUFFER_SIZE);
@@ -32,9 +32,11 @@ char *ft_edit_line(char *line)
     char *newline_pos;
 
     if (remaining)
-    {
-        line = ft_linecat(remaining, line, ft_strlen(remaining) + ft_strlen(line));
-        remaining = NULL;
+    {	
+	//printf("remaining \t:%s\n",remaining);
+        line = ft_linecat(remaining, line, ft_strlen(remaining) + ft_strlen(line),ft_strlen(line));
+	//printf("line \t:%s\n",line);
+	remaining = NULL;
     }
 
     newline_pos = ft_strchr(line, '\n');
@@ -52,7 +54,7 @@ char *ft_edit_line(char *line)
 }
 
 
-char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
+char *ft_linecat(char *line, char *buffer, size_t total_read_byte, size_t buffer_read_size)
 {	
     char *new_line;
     size_t i;
@@ -71,10 +73,10 @@ char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
 
     j = 0;
 
-    while (total_read_byte > 0) // total_read_byte göre atama yap
+    while (buffer_read_size > 0) // total_read_byte göre atama yap
     {
         new_line[i++] = buffer[j++];
-		total_read_byte--;
+		buffer_read_size--;
     }
     new_line[i] = '\0'; 
    
@@ -86,11 +88,13 @@ char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
 char *get_next_line(int fd)
 {
 	char *print_line;
-	static char *static_line;
 
 	if(fd < 0 || BUFFER_SIZE <= 0)
 		return NULL;
-	print_line = ft_edit_line(ft_read_line(fd));
+	print_line = ft_read_line(fd);
+	if(print_line == NULL)
+		return NULL;
+	print_line = ft_edit_line(print_line);
 	return print_line;
 	
 }
