@@ -25,6 +25,32 @@ char *ft_read_line(int fd)
 		}
 		return line;
 }
+char *ft_edit_line(char *line)
+{
+    static char *remaining = NULL;
+    char *final_line;
+    char *newline_pos;
+
+    if (remaining)
+    {
+        line = ft_linecat(remaining, line, ft_strlen(remaining) + ft_strlen(line));
+        remaining = NULL;
+    }
+
+    newline_pos = ft_strchr(line, '\n');
+
+    if (newline_pos)
+    {
+        *newline_pos = '\0';
+        remaining = ft_strdup(newline_pos + 1);
+    }
+
+    final_line = ft_strdup(line);
+    free(line);
+
+    return final_line;
+}
+
 
 char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
 {	
@@ -44,14 +70,14 @@ char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
     }}
 
     j = 0;
-    //printf("%s\n",line);
-    while (total_read_byte > 0)
+
+    while (total_read_byte > 0) // total_read_byte göre atama yap
     {
         new_line[i++] = buffer[j++];
-	total_read_byte--;
+		total_read_byte--;
     }
     new_line[i] = '\0'; 
-    // printf("%s\n",line);
+   
     free(line);  
 
 	return new_line;
@@ -64,7 +90,7 @@ char *get_next_line(int fd)
 
 	if(fd < 0 || BUFFER_SIZE <= 0)
 		return NULL;
-	print_line = ft_read_line(fd);
+	print_line = ft_edit_line(ft_read_line(fd));
 	return print_line;
 	
 }

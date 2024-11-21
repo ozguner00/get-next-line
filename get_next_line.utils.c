@@ -29,7 +29,31 @@ size_t	ft_strlen(const char *s)
 	}
 	return (length);
 }
+char *ft_strdup(const char *s)
+{
+    size_t len;
+    size_t i;
+    char *dup;
 
+    len = 0;
+    while (s[len])
+        len++;
+
+    dup = malloc(len + 1);
+    if (!dup)
+        return NULL;
+
+    i = 0;
+    while (s[i])
+    {
+        dup[i] = s[i];
+        i++;
+    }
+
+    dup[i] = '\0';
+
+    return dup;
+}
 void* free_and_return_null(void* ptr, void* ptr2){
     free(ptr);
     free(ptr2);
