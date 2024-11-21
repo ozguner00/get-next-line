@@ -1,22 +1,55 @@
-char *read_and_creat_for_line(int fd)
+#include "get_next_line.h"
+
+char *ft_read_line(int fd)
 {
-	int read_byte = 0;
+	int read_byte;
 	int total_read_byte = 0;
-	char *buffer = malloc(BUFFER_SIZE) * sizeof(char));
+	char *line;
+	char *buffer = malloc((BUFFER_SIZE) * sizeof(char));
 	if(!buffer)
 		return NULL;
-	read_byte = 1;
-	while(read_byte > 0)
-	{	
-		read_byte = read(fd,buffer,BUFFER_SIZE);
-		if(read_byte == -1)
-		{
-			free(buffer);
-			return NULL;
-		}
-		total_read_byte += read_byte;
+	read_byte = read(fd,buffer,BUFFER_SIZE);
 
-	}
+	while(read_byte <= -1 || read_byte > 0)
+		{
+			if(read_byte <= -1){
+				free(buffer);
+				free(line);
+				return NULL;
+			}
+			total_read_byte += read_byte;
+			line = ft_linecat(line,buffer,total_read_byte);
+			if(ft_strchar(line,'\n'))
+				return line;
+			read_byte = read(fd,buffer,BUFFER_SIZE);
+		}
+		return line;
+}
+
+char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
+{
+    char *new_line;
+    size_t i;
+    size_t j;
+    i = 0;
+    new_line = malloc(total_read_byte + 1);  
+    if (!new_line) 
+         return NULL;  
+
+    i = 0;
+    while (!line || !line[i]) {
+        new_line[i] = line[i];
+        i++;
+    }
+
+    j = 0;
+    while (buffer[j]) {
+        new_line[i++] = buffer[j++];
+    }
+    new_line[i] = '\0'; 
+    free(line);  
+
+	return new_line;
 }
 
 char *get_next_line(int fd)
@@ -24,9 +57,9 @@ char *get_next_line(int fd)
 	char *print_line;
 	static char *static_line;
 
-	if(fd < 0 || BUFFER_SIZE <= 0)
+	if(fd < 0 || BUFFER_SIZE <= 0)
 		return NULL;
-
+	print_line = ft_read_line(fd);
 	return print_line;
-	//https://github.com/ramos21rodrigo/42porto.get-next-line/blob/master/get_next_line.c
+	
 }
