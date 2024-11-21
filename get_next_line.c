@@ -1,10 +1,10 @@
 #include "get_next_line.h"
-
+#include <stdio.h>
 char *ft_read_line(int fd)
 {
 	int read_byte;
-	int total_read_byte = 0;
-	char *line;
+	size_t total_read_byte = 0;
+	char *line = NULL;
 	char *buffer = malloc((BUFFER_SIZE) * sizeof(char));
 	if(!buffer)
 		return NULL;
@@ -19,7 +19,7 @@ char *ft_read_line(int fd)
 			}
 			total_read_byte += read_byte;
 			line = ft_linecat(line,buffer,total_read_byte);
-			if(ft_strchar(line,'\n'))
+			if(ft_strchr(line,'\n'))
 				return line;
 			read_byte = read(fd,buffer,BUFFER_SIZE);
 		}
@@ -27,7 +27,7 @@ char *ft_read_line(int fd)
 }
 
 char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
-{
+{	
     char *new_line;
     size_t i;
     size_t j;
@@ -37,16 +37,21 @@ char *ft_linecat(char *line, char *buffer, size_t total_read_byte)
          return NULL;  
 
     i = 0;
-    while (!line || !line[i]) {
+    if(line){
+    while (line[i] != '\0') {
         new_line[i] = line[i];
         i++;
-    }
+    }}
 
     j = 0;
-    while (buffer[j]) {
+    //printf("%s\n",line);
+    while (total_read_byte > 0)
+    {
         new_line[i++] = buffer[j++];
+	total_read_byte--;
     }
     new_line[i] = '\0'; 
+    // printf("%s\n",line);
     free(line);  
 
 	return new_line;

@@ -3,7 +3,9 @@ char	*ft_strchr(const char *s, int c)
 {
 	int	i;
 	int	j;
-
+	
+	if(!s)
+		return NULL;
 	i = ft_strlen(s);
 	j = 0;
 	while (i >= 0)
