@@ -18,11 +18,15 @@ char *ft_read_line(int fd)
 				return NULL;
 			}
 			total_read_byte += read_byte;
-			line = ft_linecat(line,buffer,total_read_byte,read_byte);
+			line = ft_linecat(line,buffer,total_read_byte,read_byte);    
 			if(ft_strchr(line,'\n'))
-				return line;
+            {
+                free(buffer);
+                return line;
+            }
 			read_byte = read(fd,buffer,BUFFER_SIZE);
 		}
+        free(buffer);
 		return line;
 }
 char *ft_edit_line(char *line)
@@ -40,11 +44,12 @@ char *ft_edit_line(char *line)
     }
 
     newline_pos = ft_strchr(line, '\n');
-
+    
     if (newline_pos)
     {
         *newline_pos = '\0';
         remaining = ft_strdup(newline_pos + 1);
+        free(newline_pos);
     }
 
     final_line = ft_strdup(line);
@@ -93,8 +98,10 @@ char *get_next_line(int fd)
 		return NULL;
 	print_line = ft_read_line(fd);
 	if(print_line == NULL)
-		return NULL;
+		return free(print_line),NULL;
 	print_line = ft_edit_line(print_line);
-	return print_line;
+	print_line = ft_strjoin(print_line,"\n");
+
+    return print_line;
 	
 }
