@@ -124,7 +124,8 @@ char	*ft_linecat2(char *line, char *buffer, size_t total_read_byte,
 
 char	*get_next_line(int fd)
 {
-	char	*print_line;
+	char		*print_line;
+	static int	key = 0;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -132,6 +133,13 @@ char	*get_next_line(int fd)
 	if (print_line == NULL)
 		return (NULL);
 	print_line = ft_edit_line(print_line);
-	print_line = ft_strjoin(print_line, "\n");
+	if (key)
+	{
+		print_line = ft_strjoin("\n", print_line);
+	}
+	else
+	{
+		key = 1;
+	}
 	return (print_line);
 }
